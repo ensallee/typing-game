@@ -99,8 +99,6 @@ document.addEventListener("DOMContentLoaded", function() {
       body: JSON.stringify({name: nameInput})
     }
     fetch(USERS_URL, config).then(resp=>resp.json()).then(data => user = data).then(pageSetUp)
-    // console.log(userFlag)
-    // console.log(logInNameSpace)
     if (userFlag === true) {
       logInNameSpace = "Change User";
       userFlag = false;
@@ -158,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
     submitNameButton.addEventListener('click', userPostRequest)
   }
 
-  //our clock's timer 
+  //our clock's timer
   function startClock() {
     intervalFn = setInterval(handleInterval, 1000);
     setTimeout(stopClock, timerCount*1000)
@@ -177,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   //displays the clock
   function displayClock(){
-    // console.log('this is display Clock')
     let clockContainer = document.getElementById('clock-container')
     let clockDiv = document.createElement("div");
     clockDiv.id = "clock";
@@ -198,7 +195,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   //displays text for user to type
   function displayText() {
-    // console.log('this is display Text')
     container.innerHTML += "<br>";
     let inputForm = document.createElement("textarea");
     inputForm.type = 'text';
@@ -224,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
         startClock(event);
         flag = false;
       }
-    });// document.addEventListener
+    });
 
     let pArray = Array.from(document.getElementsByTagName('P')[0].children)
 
@@ -234,10 +230,10 @@ document.addEventListener("DOMContentLoaded", function() {
         counterKeystroke ++;
         startTest(event,displayAcc,pArray);
       }
-    })//inputForm.addEventListener
+    })
   }
 
-  //beings the test as well as adjusts the speed according to the speed and accuracy of the typer
+  //begins the test as well as adjusts the speed according to the speed and accuracy of the typer
   function startTest(event,displayAcc,p) {
 
     let currentText = event.target.value;
@@ -321,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
     mySound.stop();
   }
 
-  //notify user game has ended with their wpm/accuracy/score as well as saving it to our backend 
+  //notify user game has ended with their wpm/accuracy/score as well as saving it to our backend
   function endOfGameAlert(wordArray) {
     let typingAccuracy = `${parseFloat((correctStrokeCnt/counterKeystroke)*100).toFixed(2)}%`
     let wordsPerMin = `${wordArray.length * 2}`
