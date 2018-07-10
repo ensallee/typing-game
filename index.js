@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function() {
   let step=2          // smoothness of movement
 
 
+  //request to our backend API for the games that have been played
   function requestGames() {
-    console.log('this is request Games')
     let h1 = document.createElement('H1')
     h1.innerText = "Leaderboard"
     h1.style.textAlign = "center"
@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(GAMES_URL).then(response=>response.json()).then(displayGames)
   }
 
+  //displays the live words per minute and accuracy on the screen below the game
   function displayGames(gameObjs) {
     let ol = document.createElement('OL')
 
@@ -77,20 +78,19 @@ document.addEventListener("DOMContentLoaded", function() {
         if (ol.children.length < 10 ) {
           ol.appendChild(li)
         }
-
       })
     })
     ol.className = "ol-class"
     leaderBoard.appendChild(ol)
-    // leaderBoard.style.padding="10px;"
   }
 
+  //API request for the user
   function usersGetRequest() {
     return fetch(USERS_URL).then(resp=>resp.json())
   }
 
+  //saving the score of the completed game
   function userPostRequest(e) {
-    // e.preventDefault()
     let nameInput = document.getElementById('name-input-field').value
 
     let config = {
@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function() {
       body: JSON.stringify({name: nameInput})
     }
     fetch(USERS_URL, config).then(resp=>resp.json()).then(data => user = data).then(pageSetUp)
-    console.log(userFlag)
-    console.log(logInNameSpace)
+    // console.log(userFlag)
+    // console.log(logInNameSpace)
     if (userFlag === true) {
       logInNameSpace = "Change User";
       userFlag = false;
@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  //in order to reset what we have displaying on the page to make sure they are removed and reset for a "new" game look
   function pageSetUp() {
     container.innerHTML = ""
     leaderBoard.innerHTML = ""
@@ -128,11 +129,9 @@ document.addEventListener("DOMContentLoaded", function() {
     initScroller();
     displayText();
     requestGames();
-    ///////////////
-
-
   }
 
+  //adding the Modal from bootstrap to pop up for user interaction and input
   function getModal() {
     modalDiv.innerHTML = `<button type="button" class="btn btn-info" data-toggle="modal" data-target="#logInModal" style="position: absolute; right: 0px; top: 0px; width: 120px; margin: 10px; padding: 10px;">
       ${logInNameSpace}
@@ -158,25 +157,28 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>`
     const submitNameButton = document.getElementById('submitName')
     submitNameButton.addEventListener('click', userPostRequest)
-
   }
 
+  //our clock's timer 
   function startClock() {
     intervalFn = setInterval(handleInterval, 1000);
     setTimeout(stopClock, timerCount*1000)
   }
 
+  //countdown of the timer
   function handleInterval() {
     const clockDiv = document.getElementById("clock")
     clockDiv.innerText = --timerCount;
   }
 
+  //stops the clock
   function disableInterval() {
     clearInterval(intervalFn);
   }
 
+  //displays the clock
   function displayClock(){
-    console.log('this is display Clock')
+    // console.log('this is display Clock')
     let clockContainer = document.getElementById('clock-container')
     let clockDiv = document.createElement("div");
     clockDiv.id = "clock";
@@ -195,8 +197,9 @@ document.addEventListener("DOMContentLoaded", function() {
     clockContainer.prepend(clockDiv);
   }
 
+  //displays text for user to type
   function displayText() {
-    console.log('this is display Text')
+    // console.log('this is display Text')
     container.innerHTML += "<br>";
     let inputForm = document.createElement("textarea");
     inputForm.type = 'text';
@@ -236,10 +239,10 @@ document.addEventListener("DOMContentLoaded", function() {
     })//inputForm.addEventListener
   }
 
+  //beings the test as well as adjusts the speed according to the speed and accuracy of the typer
   function startTest(event,displayAcc,p) {
 
     let currentText = event.target.value;
-
     let index = currentText.length -1;
 
 
@@ -263,8 +266,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     displayAcc.innerText = `Accuracy: ${thisAccuracy}%`;
-
   }
+
 
   function atTheEdge(offset) {
     if(offset+leftPos < 100){return true;}
@@ -282,16 +285,18 @@ document.addEventListener("DOMContentLoaded", function() {
     return false;
   }
 
+  //executes the increasing of the speed in combination with the above function
   function changeSpeed(faster) {
     if(faster){
       if(speed >2) speed--;
     }else{
       speed ++;
     }
-    if(speed < 1) speed =1;
-    if(speed > 15) speed = 15;
+    if(speed < 2) speed =2;
+    if(speed > 20) speed = 20;
   }
 
+  //changes the color of the text to green or red based on correct/incorrect keys entered
   function checkTyping(currentText, p) {
       let index =0;
       let counter = 0;
@@ -310,6 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
     return counter;
   }
 
+  //stops the clock
   function stopClock() {
     let inputForm = document.getElementById('inputTxt')
     const clockDiv = document.getElementById("clock")
@@ -318,12 +324,13 @@ document.addEventListener("DOMContentLoaded", function() {
     let wordArray = inputForm.value.trim().split(' ')
     if (clockDiv.innerText == 0) {
       endOfGameAlert(wordArray)
-      console.log(wordArray);
+      // console.log(wordArray);
     }
     disableInterval();
     mySound.stop();
   }
 
+  //notify user game has ended with their wpm/accuracy/score as well as saving it to our backend 
   function endOfGameAlert(wordArray) {
     let typingAccuracy = `${parseFloat((correctStrokeCnt/counterKeystroke)*100).toFixed(2)}%`
     let wordsPerMin = `${wordArray.length * 2}`
@@ -341,6 +348,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('http://0.0.0.0:3000/api/v1/games', config)
   }
 
+  //sound effect of the typewriter in the background
   function sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;
@@ -354,56 +362,57 @@ document.addEventListener("DOMContentLoaded", function() {
     this.stop = function(){
         this.sound.pause();
     }
-}
+  }
   pageSetUp();
   getModal();
 
-  /////////////////
 
-    var x, scroll, divW, sText=""
 
-function stopScroller(){clearTimeout(scroll)}
+  ///////////////////////////////
 
-function startScroller(){
-  let tagEle = document.getElementById('tag')
-  tagEle.style.whiteSpace='nowrap'
-  var p=document.createElement('p')
-  p.id='testP'
-  p.style.fontSize='25%' //fix for mozilla. multiply by 4 before using
-  x-=step
-  if (document.getElementById('tag').className) p.className=document.getElementById('tag').className
-  p.appendChild(document.createTextNode(sText))
-  document.body.appendChild(p)
-  pw=p.offsetWidth
-  document.body.removeChild(p)
-  if (x<(pw*4)*-1){x=divW}
-  tagEle.style.left=x+'px'
-  leftPos = x;
-  scroll=setTimeout(startScroller,speed)
-}
+//how our scrolling functions work with where it begins and how it is able to move across the screen
+  var x, scroll, divW, sText=""
 
-function initScroller(){
-    console.log('this is init scroller')
+  function stopScroller(){clearTimeout(scroll)}
+
+  function startScroller(){
+    let tagEle = document.getElementById('tag')
+    tagEle.style.whiteSpace='nowrap'
+    var p=document.createElement('p')
+    p.id='testP'
+    p.style.fontSize='25%' //fix for mozilla. multiply by 4 before using
+    x-=step
+    if (document.getElementById('tag').className) p.className=document.getElementById('tag').className
+    p.appendChild(document.createTextNode(sText))
+    document.body.appendChild(p)
+    pw=p.offsetWidth
+    document.body.removeChild(p)
+    if (x<(pw*4)*-1){x=divW}
+    tagEle.style.left=x+'px'
+    leftPos = x;
+    scroll=setTimeout(startScroller,speed)
+  }
+
+  function initScroller(){
+    // console.log('this is init scroller')
     test();
 
-    document.getElementById('tag').style.whiteSpace='nowrap'
+      document.getElementById('tag').style.whiteSpace='nowrap'
 
-  if (document.getElementById && document.createElement && document.body.appendChild) {
-    // addControls();
-    divW=document.getElementById('scroller').offsetWidth;
-    x=divW - 500;
-    document.getElementById('tag').style.position='relative';
-    document.getElementById('tag').style.left=divW+'px';
-    var ss=document.getElementById('tag').childNodes;
-    // debugger;
-    for (i=0;i<ss.length;i++) {sText+=ss[i].nodeValue+" "};
-    // scroll=setTimeout('startScroller()',speed);
-    typingInterval();
+    if (document.getElementById && document.createElement && document.body.appendChild) {
+      divW=document.getElementById('scroller').offsetWidth;
+      x=divW - 800;
+      document.getElementById('tag').style.position='relative';
+      document.getElementById('tag').style.left=divW+'px';
+      var ss=document.getElementById('tag').childNodes;
+      for (i=0;i<ss.length;i++) {sText+=ss[i].nodeValue+" "};
+      typingInterval();
+    }
+
   }
-}
 
 
-function test(){
+  function test(){
     let text = oneStepAtTheTime[Math.floor(Math.random()*oneStepAtTheTime.length)];
     let pTag = document.createElement('p');
     let scrollerDiv = document.createElement('div');
@@ -421,27 +430,23 @@ function test(){
       t.innerText = (char)
       pTag.appendChild(t)
       counter++
-
     });
-
 
     scrollerDiv.appendChild(pTag);
     container.appendChild(scrollerDiv);
-}
+  }
 
 
-let startOrStop = true;
+  let startOrStop = true;
 
-//moving the line longer or shorter
-function typingInterval(){
-    setTimeout(startAction, 10); //start the scrolling
-    setTimeout(startAction, 400); // stop the scrolling
-}
+  //moving the line longer or shorter
+  function typingInterval(){
+      setTimeout(startAction, 10); //start the scrolling
+      setTimeout(startAction, 400); // stop the scrolling
+  }
 
-function startAction() {
-    if(startOrStop){startScroller();startOrStop = false;}
-    else{stopScroller(); startOrStop = true;}
-}
-
-
+  function startAction() {
+      if(startOrStop){startScroller();startOrStop = false;}
+      else{stopScroller(); startOrStop = true;}
+  }
 })
