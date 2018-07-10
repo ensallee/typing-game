@@ -15,5 +15,10 @@ PostgreSQL
 Bootstrap  
 CSS
 
+## Authors
+Derek Chen  
+Jeffrey Hwang  
+Betsy Sallee
+
 ## Acknowledgements
 We would like to thank Jonathan Mines and Jason Decker for their help and support.
